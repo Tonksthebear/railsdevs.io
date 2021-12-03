@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_08_230111) do
+ActiveRecord::Schema.define(version: 2021_11_28_095707) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,15 @@ ActiveRecord::Schema.define(version: 2021_11_08_230111) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "businesses", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "name", null: false
+    t.string "company", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_businesses_on_user_id"
+  end
+
   create_table "developers", force: :cascade do |t|
     t.string "name", null: false
     t.string "email"
@@ -56,6 +65,11 @@ ActiveRecord::Schema.define(version: 2021_11_08_230111) do
     t.datetime "updated_at", precision: 6, null: false
     t.integer "user_id"
     t.string "linkedin"
+    t.integer "search_status"
+    t.integer "preferred_min_hourly_rate"
+    t.integer "preferred_max_hourly_rate"
+    t.integer "preferred_min_salary"
+    t.integer "preferred_max_salary"
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -68,6 +82,16 @@ ActiveRecord::Schema.define(version: 2021_11_08_230111) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["read_at"], name: "index_notifications_on_read_at"
     t.index ["recipient_type", "recipient_id"], name: "index_notifications_on_recipient"
+  end
+
+  create_table "role_types", force: :cascade do |t|
+    t.bigint "developer_id"
+    t.boolean "part_time_contract"
+    t.boolean "full_time_contract"
+    t.boolean "full_time_employment"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["developer_id"], name: "index_role_types_on_developer_id", unique: true
   end
 
   create_table "users", force: :cascade do |t|
@@ -90,4 +114,5 @@ ActiveRecord::Schema.define(version: 2021_11_08_230111) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "role_types", "developers"
 end

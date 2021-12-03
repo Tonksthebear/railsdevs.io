@@ -1,4 +1,12 @@
 class DeveloperPolicy < ApplicationPolicy
+  class AlreadyExists < StandardError; end
+
+  def new?
+    raise AlreadyExists unless create?
+
+    true
+  end
+
   def create?
     record.nil?
   end

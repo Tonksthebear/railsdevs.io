@@ -1,5 +1,6 @@
 ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
+require "minitest/pride"
 require "rails/test_help"
 require "capybara"
 
@@ -11,6 +12,14 @@ class ActiveSupport::TestCase
 
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
+
+  setup do
+    ActiveStorage::Current.url_options = {protocol: "https://", host: "example.com", port: nil}
+  end
+
+  teardown do
+    ActiveStorage::Current.reset
+  end
 end
 
 class ActionDispatch::IntegrationTest
@@ -18,5 +27,8 @@ class ActionDispatch::IntegrationTest
 end
 
 class ViewComponent::TestCase
+  include FileTagsHelper
   include MetaTagsHelper
 end
+
+ActiveStorage::FixtureSet.file_fixture_path = File.expand_path("fixtures/files", __dir__)
